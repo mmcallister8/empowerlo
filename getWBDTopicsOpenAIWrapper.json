@@ -1,0 +1,41 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Get Weekly Breakdown Topics",
+    "description": "Returns a list of topics marked 'Cover in Breakdown' from ClickUp via a Pipedream webhook",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://eohtp4f7fpjg23.m.pipedream.net"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Get Breakdown Topics",
+        "operationId": "getBreakdownTopics",
+        "responses": {
+          "200": {
+            "description": "Returns an object with a 'body' key containing an array of topic titles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "body": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
