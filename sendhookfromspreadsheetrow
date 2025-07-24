@@ -1,0 +1,45 @@
+function sendWebhookOnEdit(e) {
+  if (!e) {
+    Logger.log("❌ Trigger called without event object. Do not run manually.");
+    return;
+  }
+
+  try {
+    const sheet = e.source.getActiveSheet();
+    const range = e.range;
+    const editedRow = range.getRow();
+    const numColumns = sheet.getLastColumn();
+
+    Logger.log(`✏️ Edit detected in row ${editedRow}, column ${range.getColumn()}`);
+    Logger.log(`📄 Sheet: ${sheet.getName()}`);
+
+    if (editedRow === 1) {
+      Logger.log("⏭️ Skipping header row.");
+      return;
+    }
+
+    const rowData = sheet.getRange(editedRow, 1, 1, numColumns).getValues()[0];
+    const headers = sheet.getRange(1, 1, 1, numColumns).getValues()[0];
+
+    const payload = {};
+    for (let i = 0; i < headers.length; i++) {
+      payload[headers[i]] = rowData[i];
+    }
+
+    Logger.log("📤 Sending payload: " + JSON.stringify(payload));
+
+    const options = {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    };
+
+    const response = UrlFetchApp.fetch('https://eo3bwmin3yxx50m.m.pipedream.net', options);
+    Logger.log("✅ Webhook sent. Response code: " + response.getResponseCode());
+    Logger.log("🔁 Response body: " + response.getContentText());
+
+  } catch (err) {
+    Logger.log('❗ Error: ' + err.toString());
+  }
+}
